@@ -10,38 +10,20 @@ import SwiftUI
 struct ContentView: View {
     
     @State private var temp: Double = 0
-    @State private var inputTypeSelected = "Farenheit"
-    @State private var outputTypeSelected = "Farenheit"
+    @State private var inputTypeSelected = UnitTemperature.fahrenheit
+    @State private var outputTypeSelected = UnitTemperature.fahrenheit
     @FocusState private var tempIsFocused: Bool
     
-    var tempTypes = ["Celcius", "Farenheit", "Kelvin"]
+    var units: [UnitTemperature] = [.celsius, .fahrenheit, .kelvin]
+
+    let formatter: MeasurementFormatter
     
     var outputTemp: String {
-        var inputToCelcius: Double
-        var celciusToOutput: Double
+
+        let inputTemp = Measurement(value: temp, unit: inputTypeSelected)
+        let outputTemp = inputTemp.converted(to: outputTypeSelected)
         
-        switch inputTypeSelected {
-        case "Farenheit":
-            inputToCelcius = (temp - 32) * (5/9)
-        case "Kelvin":
-            inputToCelcius = temp - 273.15
-        default:
-            inputToCelcius = temp
-        }
-        
-        switch outputTypeSelected {
-        case "Farenheit":
-            celciusToOutput = (inputToCelcius * (9/5)) + 32
-        case "Kelvin":
-            celciusToOutput = inputToCelcius + 273.15
-        default:
-            celciusToOutput = inputToCelcius * 1
-        }
-        
-        let outputValue = round(celciusToOutput * 100) / 100.0
-        
-        return "\(outputValue)  \(outputTypeSelected)"
-        
+        return formatter.string(from: outputTemp)
     }
 
     var body: some View {
@@ -52,11 +34,11 @@ struct ContentView: View {
                 Section {
                     
                     Picker("Select Type: ", selection: $inputTypeSelected) {
-                        ForEach(tempTypes, id: \.self) { option in
-                            Text(option)
+                        ForEach(units, id: \.self) {
+                            Text(formatter.string(from: $0).capitalized)
                         }
                     }
-                    .pickerStyle(.segmented)
+
                     
                     TextField("Yomama", value: $temp, format: .number)
                         .keyboardType(.decimalPad)
@@ -70,11 +52,11 @@ struct ContentView: View {
                 Section {
                     
                     Picker("Select Type: ", selection: $outputTypeSelected) {
-                        ForEach(tempTypes, id: \.self) { option in
-                            Text(option)
+                        ForEach(units, id: \.self) {
+                            Text(formatter.string(from: $0).capitalized)
                         }
                     }
-                    .pickerStyle(.segmented)
+
                     
                 } header: {
                     Text("Select output type:")
@@ -102,6 +84,13 @@ struct ContentView: View {
         }
         
     }
+    
+    init() {
+        formatter = MeasurementFormatter()
+        formatter.unitOptions = .providedUnit
+        formatter.unitStyle = .long
+    }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
