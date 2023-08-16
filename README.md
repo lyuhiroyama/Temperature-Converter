@@ -2,6 +2,4 @@
 
 Project for Paul Hudson's 100 days of SwiftUI.
 
-![UnitConverter1](https://github.com/lyuhiroyama/Unit-Conversion-App/assets/98152295/db494638-aec3-4d9b-a5ba-24576f51f2eb)
-![UnitConverter2](https://github.com/lyuhiroyama/Unit-Conversion-App/assets/98152295/1ab2171a-01aa-4a46-b190-85b95f4473bc)
-![UnitConverter3](https://github.com/lyuhiroyama/Unit-Conversion-App/assets/98152295/89c81f94-c575-4e00-95e8-c532da31c9f8)
+![UnitConverter1](https://github.com/lyuhiroyama/Unit-Conversion-App/assets/98152295/b765ecf8-711b-470c-9eeb-a773c210bfcb)  ![UnitConverter2](https://github.com/lyuhiroyama/Unit-Conversion-App/assets/98152295/e92aef38-bf6a-4525-b140-3a761467bf29)  ![UnitConverter3](https://github.com/lyuhiroyama/Unit-Conversion-App/assets/98152295/51156604-45f4-44ed-be96-b543f5c8d075)
