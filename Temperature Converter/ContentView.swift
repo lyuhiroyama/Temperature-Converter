@@ -9,18 +9,25 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var temp: Double = 0
-    @State private var inputTypeSelected = UnitTemperature.fahrenheit
-    @State private var outputTypeSelected = UnitTemperature.fahrenheit
-    @FocusState private var tempIsFocused: Bool
+    @State private var inputvalue: Double = 0
+    @State private var selectedUnits = 0
+    @State private var inputTypeSelected: Dimension = UnitLength.meters
+    @State private var outputTypeSelected: Dimension = UnitLength.yards
+    @FocusState private var inputIsFocused: Bool
     
-    var units: [UnitTemperature] = [.celsius, .fahrenheit, .kelvin]
+    let conversions = ["Distance", "Mass","Temperature", "Time"]
+    let unitTypes = [
+        [UnitLength.meters, UnitLength.kilometers, UnitLength.feet, UnitLength.yards, UnitLength.miles],
+        [UnitMass.grams, UnitMass.kilograms, UnitMass.ounces, UnitMass.pounds],
+        [UnitTemperature.celsius, UnitTemperature.fahrenheit, UnitTemperature.kelvin],
+        [UnitDuration.hours, UnitDuration.minutes, UnitDuration.seconds]
+    ]
 
     let formatter: MeasurementFormatter
     
     var outputTemp: String {
 
-        let inputTemp = Measurement(value: temp, unit: inputTypeSelected)
+        let inputTemp = Measurement(value: inputvalue, unit: inputTypeSelected)
         let outputTemp = inputTemp.converted(to: outputTypeSelected)
         
         return formatter.string(from: outputTemp)
@@ -32,36 +39,33 @@ struct ContentView: View {
             Form {
                 
                 Section {
-                    
-                    Picker("Select Type: ", selection: $inputTypeSelected) {
-                        ForEach(units, id: \.self) {
-                            Text(formatter.string(from: $0).capitalized)
-                        }
-                    }
-
-                    
-                    TextField("Yomama", value: $temp, format: .number)
+                    TextField("0", value: $inputvalue, format: .number)
                         .keyboardType(.decimalPad)
-                        .focused($tempIsFocused)
-                    
+                        .focused($inputIsFocused)
                 } header: {
-                    Text("Enter Inuput Temperature:")
+                    Text("Amount to convert:")
                 }
-                
                 
                 Section {
                     
-                    Picker("Select Type: ", selection: $outputTypeSelected) {
-                        ForEach(units, id: \.self) {
+                    Picker("Conversion", selection: $selectedUnits) {
+                        ForEach(0..<conversions.count) {
+                            Text(conversions[$0])
+                        }
+                    }
+                    Picker("Convert from", selection: $inputTypeSelected) {
+                        ForEach(unitTypes[selectedUnits], id: \.self) {
                             Text(formatter.string(from: $0).capitalized)
                         }
                     }
-
                     
-                } header: {
-                    Text("Select output type:")
+                    Picker("Convert to", selection: $outputTypeSelected) {
+                        ForEach(unitTypes[selectedUnits], id: \.self) {
+                            Text(formatter.string(from: $0).capitalized)
+                        }
+                    }
+                    
                 }
-                
                 
                 
                 Section {
@@ -72,15 +76,21 @@ struct ContentView: View {
                 
                 
             }
-            .navigationBarTitle("Temperature Converter")
+            .navigationBarTitle("Unit Converter")
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("Done"){
-                        tempIsFocused = false
+                        inputIsFocused = false
                     }
                 }
             }
+            .onChange(of: selectedUnits) { newSelection in
+                let units = unitTypes[newSelection]
+                inputTypeSelected = units[0]
+                outputTypeSelected = units[1]
+            }
+
         }
         
     }
